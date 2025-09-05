@@ -1,0 +1,30 @@
+{
+  "name": "tp1-programacion",
+  "version": "1.0.0",
+  "description": "Trabajo práctico 1 de programación",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "watch": "tsc -w",
+    "dev:ejercicio1-animal": "ts-node Ejercicio1/Animal.ts",
+    "dev:ejercicio1-perro": "ts-node Ejercicio1/Perro.ts",
+    "dev:ejercicio3-empleado": "ts-node Ejercicio3/Empleado.ts",
+    "dev:ejercicio3-main": "ts-node Ejercicio3/main.ts",
+    "dev:ejercicio5-auto": "ts-node Ejercicio5/Auto.ts",
+    "dev:ejercicio5-index": "ts-node Ejercicio5/index.ts",
+    "dev:ejercicio5-interface": "ts-node Ejercicio5/Interface_Electronico.ts",
+    "dev:ejercicio5-moto": "ts-node Ejercicio5/Moto.ts",
+    "dev:ejercicio5-vehiculo": "ts-node Ejercicio5/Vehiculo.ts"
+  },
+  "keywords": ["typescript", "programacion", "tp1"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}

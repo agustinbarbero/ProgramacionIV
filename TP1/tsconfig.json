@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "Ejercicio1/**/*",
+    "Ejercicio2/**/*",
+    "Ejercicio3/**/*",
+    "Ejercicio4/**/*",
+    "Ejercicio5/**/*"
+
+  ],
+  "exclude": ["node_modules", "dist"]
+}
