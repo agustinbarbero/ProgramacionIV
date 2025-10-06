@@ -2,6 +2,11 @@
 - Node.js v18+
 - npm
 
+
+### Aclaración
+Este proyecto utiliza Jest
+
+
 ### Instalación y ejecución
 
 
