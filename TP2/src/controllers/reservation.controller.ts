@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ReservationService } from "../services/reservation.service";
+import { ReservationService } from "../services/reservation.services";
 import { reservationSchema } from "../validations/reservation.schema";
 import { ZodError } from "zod";
 

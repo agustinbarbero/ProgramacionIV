@@ -1,7 +1,7 @@
 import { ReservationController } from '../../src/controllers/reservation.controller';
-import { ReservationService } from '../../src/services/reservation.service';
+import { ReservationService } from '../../src/services/reservation.services';
 
-jest.mock('../../src/services/reservation.service');
+jest.mock('../../src/services/reservation.services');
 
 describe('ReservationController', () => {
     it('Deberia crear una reserva exitosamente', async () => {
