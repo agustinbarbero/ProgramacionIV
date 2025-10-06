@@ -155,3 +155,13 @@ Resultado esperado:
 | ER6  | Error al actualizar (Controller)                          | Servicio lanza error                      | ID válido                              | ReservationController.update()            | Devuelve 500 con mensaje de error                                          | reservation.controller.test.ts  |
 | CA23 | Eliminar reserva (Controller)                             | Servicio devuelve true                    | ID válido                              | ReservationController.deleteReservation() | Devuelve 200 con mensaje de éxito                                          | reservation.controller.test.ts  |
 | ER7  | Error al eliminar reserva (Controller)                    | Servicio lanza error                      | ID válido                              | ReservationController.deleteReservation() | Devuelve 500 con mensaje de error                                          | reservation.controller.test.ts  |
+
+### User Story
+Proceso TDD aplicado
+1. Crear una reserva
+2. Escribir servicio ReservationService.createReservation() ejecutando test unitario en reservation.services.test.ts
+3. Se implementa lo mínimo en ReservationService.createReservation()
+4. Se refactoriza los nombres claros y se crea reservation.schema.ts
+5. Se agrega el test de integración POST /api/reservations/
+6. Se añade zod para validar el body y devolver mensajes de error
+7. Se repite el proceso para cada caso
