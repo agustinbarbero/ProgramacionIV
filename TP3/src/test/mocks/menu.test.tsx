@@ -1,9 +1,10 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { Menu } from '../../Components/Menu';
+import userEvent from '@testing-library/user-event';
+
 
 describe('Componente Menu', () => {
-  test('Encuentra el cafe Mocca del menu', async () => {
+  test('Encuentra el cafe Mocca del menu', async() => {
     // Renderiza el componente TodoApp en un entorno de prueba virtual
     render(<Menu />);
 
@@ -11,36 +12,62 @@ describe('Componente Menu', () => {
     // y verifica que esté presente en el documento.
     expect(await screen.findByText(/Mocca/i)).toBeInTheDocument();
   });
-
-  test('HU4 - Elimina un item del pedido sin borrar todo', async () => {
-    const user = userEvent.setup();
+  
+  test( 'simular click sobre el botón “Agregar” de un producto',async() => {
     render(<Menu />);
 
-    const totalElement = screen.getByText(/total: \$(\d+)/i);
+    const agregarBoton = await screen.findAllByText('Agregar');
+    agregarBoton[0].click();
 
-    const botonesAgregar = await screen.findAllByRole('button', { name: /Agregar/i });
-    const botonMocca = botonesAgregar[0];
-    const botonLatte = botonesAgregar[1];
+  
+  })
 
-    //Agrega productos duplicados
-    await user.click(botonMocca);
-    await user.click(botonLatte);
-    await user.click(botonMocca);
+  test("calcula el total del pedido al agregar productos", async () => {
+  render(<Menu />);
 
-    expect(totalElement).toHaveTextContent('Total: $5800');
+  const agregarBotones = await screen.findAllByText("Agregar");
 
-    // Verificar que hay 3 botones 
-    let botonesQuitar = await screen.findAllByRole('button', { name: /Quitar/i });
-    expect(botonesQuitar).toHaveLength(3);
+  agregarBotones[0].click();
+  agregarBotones[1].click();
+  agregarBotones[0].click(); 
 
-    // Sacar el moca
-    await user.click(botonesQuitar[0]);
+  const totalElemento = await screen.findByText("Total: $5500");
+  expect(totalElemento).toBeInTheDocument();
+});
 
-    // El total debe ser $3800 (5800 - 2000)
-    expect(totalElement).toHaveTextContent('Total: $3800');
+test('HU4 - Quita una unidad del pedido sin borrar todo', async () => {
+  const user = userEvent.setup();
+  render(<Menu />);
 
-    // deberian quedar solo 2 botones 
-    botonesQuitar = screen.getAllByRole('button', { name: /Quitar/i });
-    expect(botonesQuitar).toHaveLength(2);
-  });
+  // Esperar a que cargue el menú
+  const botonesAgregar = await screen.findAllByRole('button', { name: /Agregar/i });
+
+  // Agregar productos
+  await user.click(botonesAgregar[0]); // Mocca
+  await user.click(botonesAgregar[1]); // Latte
+  await user.click(botonesAgregar[0]); // Mocca otra vez (ahora Mocca ×2)
+
+  // Verificar el total después de agregar
+  const totalAntes = await screen.findByText(/Total: \$5500/i);
+  expect(totalAntes).toBeInTheDocument();
+
+  // Verificar que haya 2 botones Quitar (Mocca y Latte)
+  let botonesQuitar = await screen.findAllByRole('button', { name: /Quitar/i });
+  expect(botonesQuitar.length).toBe(2);
+
+  // Quitar una unidad del primer producto (Mocca)
+  await user.click(botonesQuitar[0]);
+
+  // Esperar a que el total se actualice (Mocca ×1 + Latte ×1 = $3500)
+  const totalDespues = await screen.findByText(/Total: \$3500/i);
+  expect(totalDespues).toBeInTheDocument();
+
+  // Verificar que sigan existiendo los 2 botones "Quitar" (porque ambos siguen en el pedido)
+  botonesQuitar = await screen.findAllByRole('button', { name: /Quitar/i });
+  expect(botonesQuitar.length).toBe(2);
+});
+
+
+
+
 });
