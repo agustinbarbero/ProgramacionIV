@@ -1,10 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { Menu } from '../../Components/Menu';
 import userEvent from '@testing-library/user-event';
+import { server } from '../../test/mocks/server';
+import { rest } from 'msw';
 
 
 describe('Componente Menu', () => {
-  test('Encuentra el cafe Mocca del menu', async() => {
+  test('HU1 - Encuentra el cafe Mocca del menu', async() => {
     // Renderiza el componente TodoApp en un entorno de prueba virtual
     render(<Menu />);
 
@@ -13,7 +15,7 @@ describe('Componente Menu', () => {
     expect(await screen.findByText(/Mocca/i)).toBeInTheDocument();
   });
   
-  test( 'simular click sobre el botón “Agregar” de un producto',async() => {
+  test( 'HU2 - simular click sobre el botón “Agregar” de un producto',async() => {
     render(<Menu />);
 
     const agregarBoton = await screen.findAllByText('Agregar');
@@ -22,7 +24,7 @@ describe('Componente Menu', () => {
   
   })
 
-  test("calcula el total del pedido al agregar productos", async () => {
+  test("HU3 - calcula el total del pedido al agregar productos", async () => {
   render(<Menu />);
 
   const agregarBotones = await screen.findAllByText("Agregar");
@@ -67,6 +69,59 @@ test('HU4 - Quita una unidad del pedido sin borrar todo', async () => {
   expect(botonesQuitar.length).toBe(2);
 });
 
+
+
+test('HU5 - debería enviar el pedido y mostrar un mensaje de confirmación', async () => {
+  const user = userEvent.setup();
+  render(<Menu />);
+
+  // 1. Agregar productos al pedido
+  const botonesAgregar = await screen.findAllByRole('button', { name: /Agregar/i });
+  await user.click(botonesAgregar[0]); // Mocca
+  await user.click(botonesAgregar[1]); // Jugo de Naranja
+
+  // 2. Buscar y presionar el botón de enviar
+  const enviarBoton = await screen.findByRole('button', { name: /Enviar pedido/i });
+  await user.click(enviarBoton);
+
+  // 3. Verificar el mensaje de confirmación
+  expect(await screen.findByText('Pedido confirmado')).toBeInTheDocument();
+
+  // 4. Verificar que el pedido se ha vaciado
+  const itemsPedido = screen.queryAllByRole('listitem');
+  // Filtramos los items del menú para quedarnos solo con los del pedido
+  const itemsEnPedido = itemsPedido.filter(item => item.textContent?.includes('×'));
+  expect(itemsEnPedido.length).toBe(0);
+});
+
+
+test('HU6 - debería mostrar un mensaje de error si la API del menú falla', async () => {
+  // Sobrescribimos el manejador para que devuelva un error 500
+  server.use(
+    rest.get('http://localhost/api/menu', (req, res, ctx) => {
+      return res(ctx.status(500), ctx.json({ message: 'Error interno del servidor' }));
+    })
+  );
+
+  render(<Menu />);
+
+  // Esperamos que se muestre el mensaje de error
+  expect(await screen.findByText('Error al cargar el menú.')).toBeInTheDocument();
+});
+
+test('HU6 - debería mostrar un mensaje si el menú está vacío', async () => {
+  // Sobrescribimos el manejador para que devuelva un array vacío
+  server.use(
+    rest.get('http://localhost/api/menu', (req, res, ctx) => {
+      return res(ctx.json([]));
+    })
+  );
+
+  render(<Menu />);
+
+  // Esperamos que se muestre el mensaje de "no hay productos"
+  expect(await screen.findByText('No hay productos disponibles')).toBeInTheDocument();
+});
 
 
 
