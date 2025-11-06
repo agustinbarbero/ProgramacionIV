@@ -38,12 +38,10 @@ const Menu: React.FC = () => {
       }
     };
 
-    // Detecta correctamente si está en modo test o dev
+    // verifica si esta en modo test o dev para que detecte si usar el fetch o datos simulados
     if (process.env.NODE_ENV === 'test' || !import.meta.env.DEV) {
-      // Modo TEST o PRODUCCIÓN → usar fetch() (MSW intercepta en test)
       fetchMenu();
     } else {
-      // Modo DESARROLLO → usar datos locales simulados
       console.log("Modo DEV: Cargando datos locales simulados.");
       setTimeout(() => {
         setProductos(menuData);
