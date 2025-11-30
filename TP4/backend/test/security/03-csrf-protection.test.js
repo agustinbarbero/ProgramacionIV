@@ -13,16 +13,24 @@ describe('Seguridad: CSRF (Cross-Site Request Forgery)', () => {
     app.use(session({
       secret: 'test-secret',
       resave: false,
-      saveUninitialized: true
+      saveUninitialized: true,
+      cookie: { sameSite: 'strict' } 
     }));
     
-    // Middleware para simular usuario autenticado
     app.use((req, res, next) => {
       req.session.userId = 1;
       next();
     });
     
     app.use('/api', vulnerabilityRoutes);
+
+    app.use((err, req, res, next) => {
+      if (err.code === 'EBADCSRFTOKEN') {
+        return res.status(403).json({ error: 'CSRF token missing or incorrect' });
+      }
+      next(err);
+    });
+
     agent = request.agent(app);
   });
 
